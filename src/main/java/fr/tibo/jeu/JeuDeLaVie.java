@@ -1,3 +1,6 @@
+package fr.tibo.jeu;
+
+
 public class JeuDeLaVie (){
 
   private Cellule [][];

@@ -1,4 +1,7 @@
-public Class CelluleEtatMort implements CelluleEtat{
+package fr.tibo.jeu;
+
+
+public class CelluleEtatMort implements CelluleEtat{
 
   private static final CelluleEtatMort c = new CelluleEtatMort ;
 
