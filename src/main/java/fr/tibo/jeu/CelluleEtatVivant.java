@@ -3,11 +3,11 @@ package fr.tibo.jeu;
 
 public class CelluleEtatVivant implements CelluleEtat{
 
-  private static final CelluleEtatVivant c = new CelluleEtatVivant ;
+  private static final CelluleEtatVivant c = new CelluleEtatVivant() ;
 
   private CelluleEtatVivant () {}
 
-  public static getInstance {
+  public static CelluleEtatVivant getInstance() {
     return c ;
   }
 
@@ -22,8 +22,13 @@ public class CelluleEtatVivant implements CelluleEtat{
   }
 
   @Override
-  public estVivante(){
+  public boolean estVivante(){
     return true;
+  }
+
+  @Override
+  public void accepte(Visiteur visiteur, Cellule cellule) {
+      visiteur.visiteCelluleVivante(cellule);
   }
 
 }
