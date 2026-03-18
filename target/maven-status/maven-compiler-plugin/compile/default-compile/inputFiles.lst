@@ -9,5 +9,8 @@
 /home/tibo/Documents/Jeu_de_la_vie/src/main/java/fr/tibo/jeu/CelluleEtatVivant.java
 /home/tibo/Documents/Jeu_de_la_vie/src/main/java/fr/tibo/jeu/CelluleEtat.java
 /home/tibo/Documents/Jeu_de_la_vie/src/main/java/fr/tibo/jeu/Visiteur.java
+/home/tibo/Documents/Jeu_de_la_vie/src/main/java/fr/tibo/jeu/ObservateurConsole.java
 /home/tibo/Documents/Jeu_de_la_vie/src/main/java/fr/tibo/jeu/CommandeVit.java
 /home/tibo/Documents/Jeu_de_la_vie/src/main/java/fr/tibo/jeu/JeuDeLaVieUI.java
+/home/tibo/Documents/Jeu_de_la_vie/src/main/java/fr/tibo/jeu/VisiteurDayNight.java
+/home/tibo/Documents/Jeu_de_la_vie/src/main/java/fr/tibo/jeu/VisiteurHighLife.java

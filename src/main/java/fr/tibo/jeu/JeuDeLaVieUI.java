@@ -1,28 +1,181 @@
 package fr.tibo.jeu;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Graphics;
-import javax.swing.JFrame;
+import java.awt.GridLayout;
+import java.awt.Color;
+import javax.swing.*;
 
 public class JeuDeLaVieUI extends JFrame implements Observateur {
     
     private JeuDeLaVie jeu;
 
+    private int taille_cellule = 10;
+    
+    // Variables de vitesse
+    private final int VITESSE_MAX = 10;       
+    private final int VITESSE_MIN = 1000;     
+    private final int VITESSE_DEPART = 400;  
+    
+    private GrillePanel grillePanel;
+    private Timer timer;
+    private boolean enLecture = false;
+    private Color couleurCellules = Color.BLACK;
+
     public JeuDeLaVieUI(JeuDeLaVie jeu) {
+        
         this.jeu = jeu;
-        setSize(jeu.getXMax() * 10, jeu.getYMax() * 10); // Taille minimale
-        setVisible(true);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLayout(new BorderLayout());
+
+        grillePanel = new GrillePanel();
+        grillePanel.setPreferredSize(new Dimension(jeu.getXMax() * taille_cellule, jeu.getYMax() * taille_cellule));
+        JScrollPane scrollPane = new JScrollPane(grillePanel);
+        this.add(scrollPane, BorderLayout.CENTER);
+
+        JPanel panneauControle = new JPanel();
+        panneauControle.setLayout(new GridLayout(2,1));
+
+        JPanel ligne1 = new JPanel();
+        JPanel ligne2 = new JPanel();
+
+        // Controle 
+        JButton btnPlayPause = new JButton("Play / Pause");
+        JButton btnAvancer = new JButton("Prochaine génération");
+        
+        JSlider sliderVitesse = new JSlider(VITESSE_MAX, VITESSE_MIN, VITESSE_DEPART);
+        sliderVitesse.setInverted(true);
+        JLabel labelValeurVitesse = new JLabel(sliderVitesse.getValue() + " ms");
+
+        String[] regles = {"Classique", "HighLife", "Day and Night"};
+        JComboBox<String> comboRegles = new JComboBox<>(regles);
+
+        ligne1.add(btnPlayPause);
+        ligne1.add(btnAvancer);
+        ligne1.add(new JLabel("Vitesse :"));
+        ligne1.add(labelValeurVitesse);
+        ligne1.add(sliderVitesse);
+        ligne1.add(new JLabel("Règles :"));
+        ligne1.add(comboRegles);
+
+        // Configuration de départ
+        JSlider sliderDensite = new JSlider(1,100,50);
+        JLabel labelDensite = new JLabel("Densité : " + sliderDensite.getValue() + "%");
+        JButton btnReset = new JButton("Générer");
+        JButton btnCouleur = new JButton("Couleur cellules");
+
+        JSlider sliderZoom = new JSlider(2, 40, taille_cellule);
+        JLabel labelZoom = new JLabel("Zoom : x" + sliderZoom.getValue());
+
+        ligne2.add(labelDensite);
+        ligne2.add(sliderDensite);
+        ligne2.add(btnReset);
+        ligne2.add(btnCouleur);
+        ligne2.add(new JLabel());
+        ligne2.add(labelZoom);
+        ligne2.add(sliderZoom);
+
+        panneauControle.add(ligne1);
+        panneauControle.add(ligne2);
+
+        this.add(panneauControle, BorderLayout.SOUTH);
+
+        // Le chronomètre qui calcul la génération suivante
+        timer = new Timer(VITESSE_DEPART, e -> jeu.calculerGenerationSuivante());
+
+        // Démarre ou met en pause l'animation en activant/désactivant le chrono
+        btnPlayPause.addActionListener(e -> {
+            if (enLecture) 
+                timer.stop();
+            else 
+                timer.start();
+            enLecture = !enLecture;
+        });
+
+        // Fait avancer le jeu d'une génération manuellement
+        btnAvancer.addActionListener(e -> {
+            if (!enLecture) jeu.calculerGenerationSuivante();
+        });
+
+        // Modifie la vitesse du jeu
+        sliderVitesse.addChangeListener(e -> {
+            int vitesse = sliderVitesse.getValue();
+            timer.setDelay(vitesse);
+            labelValeurVitesse.setText(vitesse + " ms");
+        });
+
+        // Change les règles
+        comboRegles.addActionListener(e -> {
+            String choix = (String) comboRegles.getSelectedItem();
+            if ("Classique".equals(choix)){
+                jeu.setVisiteur(new VisiteurClassique(jeu));
+            }
+            else if ("HighLife".equals(choix)){
+                jeu.setVisiteur(new VisiteurHighLife(jeu));
+            }
+            else if("Day and Night".equals(choix)){
+                jeu.setVisiteur(new VisiteurDayNight(jeu));
+            } 
+        });
+
+        // Met à jour le texte pour le curseur de densité
+        sliderDensite.addChangeListener(e -> {
+            labelDensite.setText("Densité : " + sliderDensite.getValue() + "%");
+        });
+
+        // générer une nouvelle grille aléatoire selon la densité choisie
+        btnReset.addActionListener(e -> {
+            jeu.densiteAleatoire(sliderDensite.getValue());
+        });
+
+        // Choisir une nouvelle couleur pour les cellules 
+        btnCouleur.addActionListener(e -> {
+
+            Color nouvelleCouleur = JColorChooser.showDialog(this, "Choisir la couleur des cellules", couleurCellules);
+
+            if (nouvelleCouleur != null) {
+                couleurCellules = nouvelleCouleur;
+                grillePanel.repaint(); 
+            }
+        });
+
+        // Action pour modifier le Zoom
+        sliderZoom.addChangeListener(e -> {
+            taille_cellule = sliderZoom.getValue(); 
+            labelZoom.setText("Zoom : x" + taille_cellule);
+            
+            grillePanel.setPreferredSize(new Dimension(jeu.getXMax() * taille_cellule, jeu.getYMax() * taille_cellule));
+            
+            grillePanel.revalidate(); 
+            grillePanel.repaint();
+        });
+
+        this.pack();
+        this.setLocationRelativeTo(null);
+        this.setVisible(true);
     }
 
+    @Override
     public void actualise() {
-        repaint();
+        grillePanel.repaint(); 
     }
 
-    public void paint(Graphics g) {
-        super.paint(g);
-        for(int x = 0; x < jeu.getXMax(); x++) {
-            for(int y = 0; y < jeu.getYMax(); y++) {
-                if (jeu.getGrilleXY(x,y).estVivante()) {
-                    g.fillOval(x * 10, y * 10, 10, 10);
+    private class GrillePanel extends JPanel {
+
+        @Override
+        protected void paintComponent(Graphics g){
+
+            int i,j;
+
+            super.paintComponent(g);
+            g.setColor(couleurCellules);
+
+            for(i=0; i < jeu.getXMax(); i++) {
+                for(j=0; j < jeu.getYMax(); j++) {
+                    if (jeu.getGrilleXY(i,j).estVivante()) {
+                        g.fillOval(i* taille_cellule,j* taille_cellule, taille_cellule, taille_cellule);
+                    }
                 }
             }
         }

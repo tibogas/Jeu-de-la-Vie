@@ -8,7 +8,7 @@ public class JeuDeLaVie implements Observable{
   private Cellule grille [][];
   private int xMax;
   private int yMax;
-  private Visiteur visiteur;
+  public Visiteur visiteur;
 
   private List<Observateur> observateurs = new ArrayList<>();
   private List<Commande> commandes = new ArrayList<>();
@@ -40,6 +40,23 @@ public class JeuDeLaVie implements Observable{
 
   }
 
+  public void densiteAleatoire(int p) {
+
+    int i,j;
+
+    for (i = 0; i < xMax; i++) {
+      for (j = 0; j < yMax; j++) {
+        if (Math.random() * 100 < p) {
+          grille[i][j].vit();
+        } else {
+          grille[i][j].meurt();
+        }
+      }
+    }
+
+    notifieObservateurs();
+  }
+
   public Cellule getGrilleXY(int x, int y){
     return grille[x][y];
   }
@@ -50,6 +67,10 @@ public class JeuDeLaVie implements Observable{
 
   public int getYMax(){
     return yMax;
+  }
+
+  public void setVisiteur(Visiteur v) {
+      this.visiteur = v;
   }
 
   public void attacheObservateur(Observateur o){ 
@@ -96,27 +117,12 @@ public class JeuDeLaVie implements Observable{
       JeuDeLaVie jeu = new JeuDeLaVie(200, 200);
       jeu.initialiserGrille();
 
+      jeu.visiteur = new VisiteurClassique(jeu); 
+      
+      ObservateurConsole obsConsole = new ObservateurConsole(jeu);
+      jeu.attacheObservateur(obsConsole);
+
       JeuDeLaVieUI ui = new JeuDeLaVieUI(jeu);
       jeu.attacheObservateur(ui);
-      
-      jeu.visiteur = new VisiteurClassique(jeu); 
-
-      while(true) {
-          try {
-              Thread.sleep(1000); // Met en pause
-          } catch (InterruptedException e) {
-              e.printStackTrace();
-          }
-          jeu.calculerGenerationSuivante();
-      }
   }
-
 }
-
-
-
-
-
-
-
-

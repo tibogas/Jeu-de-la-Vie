@@ -11,3 +11,7 @@ fr/tibo/jeu/CommandeMeurt.class
 fr/tibo/jeu/VisiteurClassique.class
 fr/tibo/jeu/Observateur.class
 fr/tibo/jeu/JeuDeLaVie.class
+fr/tibo/jeu/VisiteurDayNight.class
+fr/tibo/jeu/VisiteurHighLife.class
+fr/tibo/jeu/JeuDeLaVieUI$GrillePanel.class
+fr/tibo/jeu/ObservateurConsole.class
