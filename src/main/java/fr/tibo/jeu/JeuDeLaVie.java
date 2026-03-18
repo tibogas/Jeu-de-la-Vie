@@ -114,7 +114,7 @@ public class JeuDeLaVie implements Observable{
 
   public static void main(String[] args) {
 
-      JeuDeLaVie jeu = new JeuDeLaVie(200, 200);
+      JeuDeLaVie jeu = new JeuDeLaVie(180, 80);
       jeu.initialiserGrille();
 
       jeu.visiteur = new VisiteurClassique(jeu); 

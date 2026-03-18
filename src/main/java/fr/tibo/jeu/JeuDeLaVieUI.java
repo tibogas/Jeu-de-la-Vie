@@ -23,6 +23,7 @@ public class JeuDeLaVieUI extends JFrame implements Observateur {
     private boolean enLecture = false;
     private Color couleurCellules = Color.BLACK;
 
+
     public JeuDeLaVieUI(JeuDeLaVie jeu) {
         
         this.jeu = jeu;
@@ -35,15 +36,11 @@ public class JeuDeLaVieUI extends JFrame implements Observateur {
         this.add(scrollPane, BorderLayout.CENTER);
 
         JPanel panneauControle = new JPanel();
-        panneauControle.setLayout(new GridLayout(2,1));
+        panneauControle.setLayout(new GridLayout(3, 1, 0, 3)); 
 
-        JPanel ligne1 = new JPanel();
-        JPanel ligne2 = new JPanel();
-
-        // Controle 
+        // Composants
         JButton btnPlayPause = new JButton("Play / Pause");
         JButton btnAvancer = new JButton("Prochaine génération");
-        
         JSlider sliderVitesse = new JSlider(VITESSE_MAX, VITESSE_MIN, VITESSE_DEPART);
         sliderVitesse.setInverted(true);
         JLabel labelValeurVitesse = new JLabel(sliderVitesse.getValue() + " ms");
@@ -51,37 +48,50 @@ public class JeuDeLaVieUI extends JFrame implements Observateur {
         String[] regles = {"Classique", "HighLife", "Day and Night"};
         JComboBox<String> comboRegles = new JComboBox<>(regles);
 
-        ligne1.add(btnPlayPause);
-        ligne1.add(btnAvancer);
-        ligne1.add(new JLabel("Vitesse :"));
-        ligne1.add(labelValeurVitesse);
-        ligne1.add(sliderVitesse);
-        ligne1.add(new JLabel("Règles :"));
-        ligne1.add(comboRegles);
-
-        // Configuration de départ
-        JSlider sliderDensite = new JSlider(1,100,50);
+        JSlider sliderDensite = new JSlider(1, 100, 50);
         JLabel labelDensite = new JLabel("Densité : " + sliderDensite.getValue() + "%");
-        JButton btnReset = new JButton("Générer");
-        JButton btnCouleur = new JButton("Couleur cellules");
+        JButton btnReset = new JButton("Générer nouvelle grille");
 
+        JButton btnCouleur = new JButton("Couleur cellules");
         JSlider sliderZoom = new JSlider(2, 40, taille_cellule);
         JLabel labelZoom = new JLabel("Zoom : x" + sliderZoom.getValue());
 
-        ligne2.add(labelDensite);
-        ligne2.add(sliderDensite);
-        ligne2.add(btnReset);
-        ligne2.add(btnCouleur);
-        ligne2.add(new JLabel());
-        ligne2.add(labelZoom);
-        ligne2.add(sliderZoom);
 
-        panneauControle.add(ligne1);
-        panneauControle.add(ligne2);
+        // Paramètre de jeu
+        JPanel blocJeu = new JPanel();
+        blocJeu.setBorder(BorderFactory.createTitledBorder("Paramètres Jeu"));
+        blocJeu.add(btnPlayPause);
+        blocJeu.add(btnAvancer);
+        blocJeu.add(new JLabel(" Vitesse :"));
+        blocJeu.add(sliderVitesse);
+        blocJeu.add(labelValeurVitesse);
+
+        // Parmètre de grille 
+        JPanel blocGrille = new JPanel();
+        blocGrille.setBorder(BorderFactory.createTitledBorder("Paramètres Grille"));
+        blocGrille.add(new JLabel("Règles :"));
+        blocGrille.add(comboRegles);
+        blocGrille.add(new JLabel("  "));
+        blocGrille.add(labelDensite);
+        blocGrille.add(sliderDensite);
+        blocGrille.add(btnReset);
+
+        // Paramètre d'affichage 
+        JPanel blocAffichage = new JPanel();
+        blocAffichage.setBorder(BorderFactory.createTitledBorder("Paramètres Affichage"));
+        blocAffichage.add(btnCouleur);
+        blocAffichage.add(new JLabel("  "));
+        blocAffichage.add(labelZoom);
+        blocAffichage.add(sliderZoom);
+
+        panneauControle.add(blocJeu);
+        panneauControle.add(blocGrille);
+        panneauControle.add(blocAffichage);
 
         this.add(panneauControle, BorderLayout.SOUTH);
 
-        // Le chronomètre qui calcul la génération suivante
+       
+        // Le chrono qui calcul la generation suivante
         timer = new Timer(VITESSE_DEPART, e -> jeu.calculerGenerationSuivante());
 
         // Démarre ou met en pause l'animation en activant/désactivant le chrono
@@ -93,7 +103,7 @@ public class JeuDeLaVieUI extends JFrame implements Observateur {
             enLecture = !enLecture;
         });
 
-        // Fait avancer le jeu d'une génération manuellement
+        // Fait avancer le jeu d'une generation manuellement
         btnAvancer.addActionListener(e -> {
             if (!enLecture) jeu.calculerGenerationSuivante();
         });
@@ -105,7 +115,7 @@ public class JeuDeLaVieUI extends JFrame implements Observateur {
             labelValeurVitesse.setText(vitesse + " ms");
         });
 
-        // Change les règles
+        // Change les regles
         comboRegles.addActionListener(e -> {
             String choix = (String) comboRegles.getSelectedItem();
             if ("Classique".equals(choix)){
@@ -131,7 +141,6 @@ public class JeuDeLaVieUI extends JFrame implements Observateur {
 
         // Choisir une nouvelle couleur pour les cellules 
         btnCouleur.addActionListener(e -> {
-
             Color nouvelleCouleur = JColorChooser.showDialog(this, "Choisir la couleur des cellules", couleurCellules);
 
             if (nouvelleCouleur != null) {
