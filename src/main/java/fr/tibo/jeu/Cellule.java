@@ -1,12 +1,23 @@
 package fr.tibo.jeu;
 
-
+/**
+ * Représente une cellule individuelle dans la grille du jeu
+ * Une cellule possède des coordonnées (x, y) et un état courant (vivante ou morte)
+ * Elle utilise le pattern État pour déléguer son comportement selon qu'elle soit en vie ou non
+ * * @author Thibaut Gasnier
+ */
 public class Cellule {
 
   private CelluleEtat etat;
   private int x;
   private int y;
 
+  /**
+   * Construit une nouvelle cellule avec un état initial et des coordonnées précises
+   * * @param etat L'état initial de la cellule 
+   * @param x    La position en abscisse de la cellule dans la grille
+   * @param y    La position en ordonnée de la cellule dans la grille
+   */
   public Cellule (CelluleEtat etat,int x ,int y){
     this.x = x;
     this.y = y;
@@ -21,10 +32,16 @@ public class Cellule {
     this.etat = this.etat.meurt();
   }
 
+ 
   public boolean estVivante(){
     return this.etat.estVivante();
   }
 
+  /**
+   * Calcule le nombre de cellules voisines actuellement en vie autour de la cellule
+   * @param jeu L'instance actuelle du jeu pour accéder à l'état global de la grille
+   * @return Le nombre de voisines vivantes
+   */
   public int nombreVoisinesVivantes(JeuDeLaVie jeu) {
 
     int i,j;
@@ -55,6 +72,10 @@ public class Cellule {
 
   }
 
+  /**
+   * Permet à un visiteur d'appliquer ses règles 
+   * * @param visiteur Le visiteur contenant les règles du jeu
+   */
   public void accepte(Visiteur visiteur) {
       this.etat.accepte(visiteur, this);
   }

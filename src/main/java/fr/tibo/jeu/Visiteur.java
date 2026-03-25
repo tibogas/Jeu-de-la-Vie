@@ -1,5 +1,10 @@
 package fr.tibo.jeu;
 
+/**
+ * Classe abstraite définissant le Design Pattern Visiteur.
+ * Elle permet de séparer l'algorithme de la structure des cellules. Il évalue l'état des cellules et génère des commandes.
+ * * @author Thibaut Gasnier
+ */
 public abstract class Visiteur {
     
     protected JeuDeLaVie jeu;

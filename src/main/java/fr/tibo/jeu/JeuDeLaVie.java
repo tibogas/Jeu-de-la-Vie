@@ -3,25 +3,40 @@ package fr.tibo.jeu;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe principal du Jeu de la Vie
+ * Elle gère la grille de cellules, le calcul des générations et notifie l'interface graphique des changements
+ * Elle utilise les Design Patterns Observateur, Visiteur et Commande
+ * * @author Thibaut Gasnier
+ */
 public class JeuDeLaVie implements Observable{
 
   private Cellule grille [][];
   private int xMax;
   private int yMax;
   public Visiteur visiteur;
+  private int nb_gen = 0;
 
   private List<Observateur> observateurs = new ArrayList<>();
   private List<Commande> commandes = new ArrayList<>();
 
+  /**
+  * Construit une nouvelle instance du jeu.
+  * * @param xMax Le nombre de colonnes de la grille
+  * @param yMax Le nombre de lignes de la grille
+  */
   public JeuDeLaVie(int xMax,int yMax){
     this.xMax = xMax;
     this.yMax = yMax;
     this.grille = new Cellule[xMax][yMax];
   }
 
-
+  /**
+   * Initialise la grille avec une répartition aléatoire de 50% de cellules vivantes et 50% de cellules mortes
+   */
   public void initialiserGrille(){
     int i,j;
+    nb_gen = 0;
 
     for (i=0; i<xMax ; i++){
       for (j=0 ; j<yMax ; j++){ 
@@ -40,9 +55,14 @@ public class JeuDeLaVie implements Observable{
 
   }
 
+  /**
+   * Réinitialise la grille en forçant un pourcentage précis de cellules vivantes
+   * * @param p Le pourcentage de chance qu'une cellule naisse
+   */
   public void densiteAleatoire(int p) {
 
     int i,j;
+    nb_gen = 0;
 
     for (i = 0; i < xMax; i++) {
       for (j = 0; j < yMax; j++) {
@@ -89,6 +109,9 @@ public class JeuDeLaVie implements Observable{
       commandes.add(c);
   }
 
+  /**
+   * Exécute toutes les commandes accumulées par le visiteur puis vide la liste pour la génération suivante.
+   */
   public void executeCommandes() {
 
       for (Commande c : commandes) {
@@ -98,6 +121,9 @@ public class JeuDeLaVie implements Observable{
   
   }
 
+  /**
+   * Fait passer le visiteur actuel sur absolument toutes les cellules de la grille pour évaluer si elles doivent vivre ou mourir au prochain tour
+   */
   public void distribueVisiteur() {
       for (int i = 0; i < xMax; i++) {
           for (int j = 0; j < yMax; j++) {
@@ -106,7 +132,31 @@ public class JeuDeLaVie implements Observable{
       }
   }
 
+  public int getNbGenerations() {
+      return nb_gen;
+  }
+
+  public int getNbCellule() {
+
+      int nb = 0;
+      int i,j;
+
+      for (i = 0; i < xMax; i++) {
+          for (j= 0; j < yMax; j++) {
+              if (grille[i][j].estVivante()) {
+                  nb++;
+              }
+          }
+      }
+      return nb;
+  }
+
+  /**
+   * Méthode qui fait le calcul complet d'un cycle de vie
+   * Elle incrémente le compteur, évalue les règles, applique les changements et déclenche le rafraîchissement graphique
+   */
   public void calculerGenerationSuivante(){
+      nb_gen++;
       distribueVisiteur();    
       executeCommandes();   
       notifieObservateurs();

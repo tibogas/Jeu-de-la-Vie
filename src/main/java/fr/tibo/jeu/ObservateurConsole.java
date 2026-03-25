@@ -1,5 +1,9 @@
 package fr.tibo.jeu;
 
+/**
+ * Implémentation  d'un Observateur qui affiche les statistiques du jeu dans la console
+ * * @author Thibaut Gasnier
+ */
 public class ObservateurConsole implements Observateur {
     
     private JeuDeLaVie jeu;

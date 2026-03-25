@@ -1,5 +1,9 @@
 package fr.tibo.jeu;
 
+/**
+ * Visiteur implémentant les règles HighLife du Jeu de la Vie
+ * * @author Thibaut Gasnier
+ */
 public class VisiteurHighLife extends Visiteur {
     
     public VisiteurHighLife (JeuDeLaVie jeu){

@@ -1,5 +1,9 @@
 package fr.tibo.jeu;
 
+/**
+ * Visiteur implémentant les règles originales du Jeu de la Vie
+ * * @author Thibaut Gasnier
+ */
 public class VisiteurClassique extends Visiteur {
     
     public VisiteurClassique (JeuDeLaVie jeu){

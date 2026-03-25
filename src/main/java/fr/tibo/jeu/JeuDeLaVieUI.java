@@ -5,8 +5,15 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Color;
+import java.awt.Toolkit;
 import javax.swing.*;
 
+/**
+ * Interface Graphique principale du jeu
+ * Elle hérite de JFrame pour créer la fenêtre et implémente le pattern Observateur
+ * Elle affiche la grille, les statistiques, le panneau de contrôle et se met à jour automatiquement à chaque nouvelle génération
+ * * @author Thibaut Gasnier
+ */
 public class JeuDeLaVieUI extends JFrame implements Observateur {
     
     private JeuDeLaVie jeu;
@@ -22,8 +29,14 @@ public class JeuDeLaVieUI extends JFrame implements Observateur {
     private Timer timer;
     private boolean enLecture = false;
     private Color couleurCellules = Color.BLACK;
+    private JLabel labelGenerations;
+    private JLabel labelPopulation;
 
-
+    /**
+     * Construit l'interface graphique et la connecte au moteur du jeu
+     * Initialise et place tous les composants et configure leurs écouteurs d'événements
+     * @param jeu L'instance du modèle
+     */
     public JeuDeLaVieUI(JeuDeLaVie jeu) {
         
         this.jeu = jeu;
@@ -34,6 +47,17 @@ public class JeuDeLaVieUI extends JFrame implements Observateur {
         grillePanel.setPreferredSize(new Dimension(jeu.getXMax() * taille_cellule, jeu.getYMax() * taille_cellule));
         JScrollPane scrollPane = new JScrollPane(grillePanel);
         this.add(scrollPane, BorderLayout.CENTER);
+
+        
+        labelGenerations = new JLabel("Générations : 0");
+        labelPopulation = new JLabel("    Nombre de Cellules : 0    ");
+        
+        JPanel panneauStats = new JPanel();
+        panneauStats.add(labelGenerations);
+        panneauStats.add(labelPopulation);
+        
+        // On accroche cette barre tout en haut (NORTH) de la fenêtre
+        this.add(panneauStats, BorderLayout.NORTH);
 
         JPanel panneauControle = new JPanel();
         panneauControle.setLayout(new GridLayout(3, 1, 0, 3)); 
@@ -117,7 +141,11 @@ public class JeuDeLaVieUI extends JFrame implements Observateur {
 
         // Change les regles
         comboRegles.addActionListener(e -> {
+
+        if (enLecture) btnPlayPause.doClick(); // Met en pause
+
             String choix = (String) comboRegles.getSelectedItem();
+
             if ("Classique".equals(choix)){
                 jeu.setVisiteur(new VisiteurClassique(jeu));
             }
@@ -165,11 +193,19 @@ public class JeuDeLaVieUI extends JFrame implements Observateur {
         this.setVisible(true);
     }
 
+    /**
+    * Met à jour les compteurs de statistiques et force le redessin de la grille
+    */
     @Override
     public void actualise() {
+        labelGenerations.setText("Générations : " + jeu.getNbGenerations());
+        labelPopulation.setText("    Nombre de Cellules : " + jeu.getNbCellule());
         grillePanel.repaint(); 
     }
 
+    /**
+     * Panneau interne (JPanel) dédié au dessin de la grille de cellules
+     */
     private class GrillePanel extends JPanel {
 
         @Override
@@ -187,6 +223,7 @@ public class JeuDeLaVieUI extends JFrame implements Observateur {
                     }
                 }
             }
+            Toolkit.getDefaultToolkit().sync();
         }
     }
 }

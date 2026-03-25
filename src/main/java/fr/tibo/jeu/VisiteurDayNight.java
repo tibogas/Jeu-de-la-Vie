@@ -1,5 +1,8 @@
 package fr.tibo.jeu;
-
+/**
+ * Visiteur implémentant les règles Day and Nigth du Jeu de la Vie
+ * * @author Thibaut Gasnier
+ */
 public class VisiteurDayNight extends Visiteur {
     
     public VisiteurDayNight (JeuDeLaVie jeu){
