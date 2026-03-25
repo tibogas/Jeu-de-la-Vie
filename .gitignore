@@ -1,1 +1,13 @@
+# Dossier de compilation Maven (celui qu'on veut absolument ignorer !)
+target/
+
+# Fichiers compilés Java
 *.class
+
+# Fichiers de configuration des éditeurs (Optionnel mais recommandé)
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
